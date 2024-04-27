@@ -11,7 +11,9 @@ class InertiaTestController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Inertia/Index');
+        return Inertia::render('Inertia/Index', [
+            'blogs' => InertiaTest::all()
+        ]);
     }
 
     public function create()
@@ -24,7 +26,8 @@ class InertiaTestController extends Controller
         //dd($id);
         return Inertia::render('Inertia/Show',
             [
-                'id' => $id
+                'id' => $id,
+                'blog' => InertiaTest::findOrFail($id)
             ]
         );
     }
@@ -34,15 +37,15 @@ class InertiaTestController extends Controller
         Log::debug('before');
         Log::debug($request);
 
-        // $validate = $request->validate([
-        //     'title' => ['required', 'max:20'],
-        //     'content' => ['required'],
-        // ]);
-
-        $request->validate([
-            'title' => 'required|unique:posts|max:20',
-            'content' => 'required',
+        $validate = $request->validate([
+            'title' => ['required', 'max:20'],
+            'content' => ['required'],
         ]);
+
+        //$request->validate([
+        //    'title' => 'required|unique:posts|max:20',
+        //    'content' => 'required',
+        //]);
 
         Log::debug('message');
         Log::debug($request);
@@ -56,6 +59,16 @@ class InertiaTestController extends Controller
         return to_route('inertia.index')
         ->with([
             'message' => '登録しました。'
+        ]);
+    }
+
+    public function delete($id){
+        $book = InertiaTest::findOrFail($id);
+        $book->delete();
+
+        return to_route('inertia.index')
+        ->with([
+            'message' => '削除しました。'
         ]);
     }
 }
