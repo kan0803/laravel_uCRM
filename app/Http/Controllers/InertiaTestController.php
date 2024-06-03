@@ -69,6 +69,7 @@ class InertiaTestController extends Controller
         return to_route('inertia.index')
         ->with([
             'message' => '削除しました。'
+            
         ]);
     }
 }
